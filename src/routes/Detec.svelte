@@ -6,7 +6,7 @@
   import {scale, fly, fade} from 'svelte/transition';
   import Message from "./Message.svelte";
   import LoadingAnimation from "./LoadingAnimation.svelte";
-
+  import { page } from '$app/stores';
 
   $: state = "loading";
 
@@ -268,6 +268,9 @@
       canvasRef.getContext('2d').drawImage(videoRef, 0, 0, videoRef.width, videoRef.height);
       // Get data URL representing the image as a base64-encoded string.
       const dataUrl = canvasRef.toDataURL('image/png');
+      // Get the student's email from the page store
+      const studentEmail = $page.data.session.user?.email;
+      console.log("Here is the student's email: " + studentEmail);
       // Sets the value of the image store to the data URL. The value of the store is updated, and any component subscribing to the image store will be notified of the change and can react accordingly.
       image.set(dataUrl);
       // Stores to the DataBase
@@ -275,7 +278,7 @@
           method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              email: 'studentemail@gmail.com', // Add the email here
+              email: studentEmail, // Add the email here
               imageData: imageValue
             })
          });
