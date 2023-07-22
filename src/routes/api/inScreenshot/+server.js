@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { MongoClient } from 'mongodb';
 
-const uri = 'mongodb+srv://root:juana99@cluster0.zf9fl.mongodb.net/?retryWrites=true&w=majority';
+const uri = "mongodb+srv://ldelucia:BHFJTRz8V7wHfLld@cluster-0.c5sdcyr.mongodb.net/?retryWrites=true&w=majority";
 
 // @ts-ignore
 export async function POST({request}){

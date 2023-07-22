@@ -23,6 +23,6 @@
     }
 </script>
   
-  <main>
-    <input type="file" accept="image/png" on:change={handleFileInput}>
-  </main>
+<main>
+  <input type="file" accept="image/png" on:change={handleFileInput}>
+</main>
