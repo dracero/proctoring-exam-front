@@ -274,7 +274,10 @@
       const response = await fetch('/api/inPhoto', {
           method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ imageData: imageValue })
+            body: JSON.stringify({
+              email: 'studentemail@gmail.com', // Add the email here
+              imageData: imageValue
+            })
          });
          if (response.ok) {
             console.log("Data inserted successfully");
