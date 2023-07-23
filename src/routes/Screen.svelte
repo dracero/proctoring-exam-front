@@ -10,7 +10,7 @@ async function takeScreenshot() {
   screenshotUrl = await html2canvas(iframeContent, { useCORS: true }).then(canvas => {
       return canvas.toDataURL();
   });
-  const response = await fetch('/api/inScreenshot', {
+  const response = await fetch('/api/inTestScreenshot', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ 
