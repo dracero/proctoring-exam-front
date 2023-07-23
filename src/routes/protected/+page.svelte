@@ -17,7 +17,6 @@
 </p>
 <Detect />
 <Snap />
-<Screen />
 <Speech />
 <Detectab />
 <Subir />

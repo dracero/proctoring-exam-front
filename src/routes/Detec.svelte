@@ -7,6 +7,7 @@
   import Message from "./Message.svelte";
   import LoadingAnimation from "./LoadingAnimation.svelte";
   import { page } from '$app/stores';
+  import Screen from './Screen.svelte';
 
   $: state = "loading";
 
@@ -268,6 +269,7 @@
       canvasRef.getContext('2d').drawImage(videoRef, 0, 0, videoRef.width, videoRef.height);
       // Get data URL representing the image as a base64-encoded string.
       const dataUrl = canvasRef.toDataURL('image/png');
+      console.log(dataUrl);
       // Get the student's email from the page store
       const studentEmail = $page.data.session.user?.email;
       console.log("Here is the student's email: " + studentEmail);
@@ -357,7 +359,7 @@
     <h2 id="status"></h2>
     <p></p>
   {#if state === "render-test"}
-   <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdcVUjKVIfcsW1jC2LEKivhJR65bWGRTUkaLo1Nw1N26gWGXQ/viewform?embedded=true" width="100%" height="468" frameborder="0" marginheight="0" marginwidth="0" title="Google Form">Cargando…</iframe>
+    <Screen />    
   {:else}
       <canvas class="webcam-placeholder"></canvas>
       <video 
