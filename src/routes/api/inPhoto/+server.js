@@ -10,7 +10,7 @@ export async function POST({request}){
   if (!email || !imageData) {
     throw error(400, 'Please provide all required fields.');
   }
-
+  console.log("IMAGE DATA: " + imageData)
   // @ts-ignore
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   await client.connect();

@@ -18,9 +18,9 @@ async function checkMicStatus() {
 </script>
   
  {#if isMicOn}
-    <p>The mic is on.</p>
+    <p></p>
   {:else}
-    <p>The mic is off.</p>
+    <p></p>
   {/if}
   
   

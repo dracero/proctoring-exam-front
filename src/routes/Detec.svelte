@@ -265,12 +265,13 @@
     });
   
   async function takePhoto() {
+      console.log("videoRef width:" + videoRef.width + " height:" + videoRef.height)
       // Get current frame from the video into the canvas
-      canvasRef.getContext('2d').drawImage(videoRef, 0, 0, videoRef.width, videoRef.height);
+      canvasRef.getContext('2d').drawImage(videoRef, 0, 0, canvasRef.width, canvasRef.height);
       // Get data URL representing the image as a base64-encoded string.
       const dataUrl = canvasRef.toDataURL('image/png');
-      console.log(dataUrl);
       // Get the student's email from the page store
+      console.log(dataUrl)
       const studentEmail = $page.data.session.user?.email;
       console.log("Here is the student's email: " + studentEmail);
       // Sets the value of the image store to the data URL. The value of the store is updated, and any component subscribing to the image store will be notified of the change and can react accordingly.
@@ -368,7 +369,13 @@
         autoplay={true} 
         bind:this={videoRef} 
         ></video>
-    <canvas class="canvas" width="128" height="96" bind:this={canvasRef}></canvas>
+    <canvas 
+      class="canvas" 
+      style="position: fixed; top: -100px; left: -100px;"
+      width="128" 
+      height="96" 
+      bind:this={canvasRef}>
+    </canvas>
     {#if state === "loading"}
       <Message msg="Cargando..."/>
       <LoadingAnimation/>
@@ -457,8 +464,8 @@
     .responsive-webcam {
       position: fixed;
       top: calc(32%); /* Adjust the top position as needed */
-      left: calc(25%); /* Adjust the left position as needed */
-      width: 50vw;
+      left: calc(30%); /* Adjust the left position as needed */
+      width: 40vw;
       height: 50vh;
     }
 

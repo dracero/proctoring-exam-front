@@ -5,7 +5,7 @@
   </script>
   
   <div class="message-container">
-      <p class="message-text" in:fly={{ y: -100, duration: 1000 , delay:200 }} out:fade={{duration: 500}} style="font-family: Helvetica">{msg}</p>
+      <p class="message-text" in:fly={{ y: -100, duration: 1000 , delay:200 }} style="font-family: Helvetica">{msg}</p>
   </div>
   
   <style>

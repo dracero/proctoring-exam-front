@@ -10,10 +10,8 @@
     import Subir from "../Subir.svelte";
 </script>
 {#if $page.data.session}
-<h1>Protected page</h1>
+<h1></h1>
 <p>
-  This is a protected content. You can access this content because you are
-  signed in.
 </p>
 <Detect />
 <Snap />
