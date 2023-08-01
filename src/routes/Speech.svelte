@@ -45,14 +45,16 @@
           
           transcript = transcript.replace(/\./g, ". "); // Establezco la separación en puntos
           wordsSpoken = wordsSpoken+1;
-          if (wordsSpoken >= 5) {
-              const conversation = transcript.split(" ").slice(-(wordsSpoken+1)).join(" ")
+          
+          if (wordsSpoken > 5) {
+              const conversation = transcript.split(" ").slice(-(wordsSpoken)).join(" ")
               console.log("Conversation detected: " + conversation)
               sendToDB(conversation,transcript);
               wordsSpoken = 0;
           }
           // Set up a timer to reset wordsSpoken and startTime after 5 seconds
           setTimeout(() => {
+            wordsSpoken = 0;
           }, 5000);
           //store to use in another component
           texto.set(transcript);
