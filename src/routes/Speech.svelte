@@ -9,7 +9,8 @@
     let textSpoken = '';
     let wordsSpoken = 0;
     let prevTimestamp = 0; // Store the previous timestamp
-
+    let conversationTimeout = null;
+    let conversation = ""; // Initialize conversation as an empty string
 
     async function sendToDB(conversation, transcript){
       const response = await fetch('/api/inConversation', {
@@ -45,33 +46,30 @@
           .map(result => result.transcript)
           .join('');
           
-          // Calculate how much time has passed since the last event was triggered
+          // Calculate how much time has passed since the last word was spoken
           const currentTimestamp = Date.now();
           const timePassed = (currentTimestamp - prevTimestamp) / 1000; // Convert to seconds
           prevTimestamp = currentTimestamp; // Update the previous timestamp
-
-          transcript = transcript.replace(/\./g, ". "); // Establezco la separación en puntos
+          // Separate after dot
+          transcript = transcript.replace(/\./g, ". "); 
+          // Update words spoken        
           wordsSpoken = wordsSpoken+1;
 
-          console.log(wordsSpoken);
-
-          if (timePassed > 3){
+          if (conversationTimeout !== null) {
+            clearTimeout(conversationTimeout);
+          }
+          // Set up a timeout to check for conversation after a certain pause
+          conversationTimeout = setTimeout(() => {
             if (wordsSpoken > 5) {
-                const conversation = transcript.split(" ").slice(-(wordsSpoken+1),-1).join(" ")
-                console.log("Conversation detected: " + conversation)
-                sendToDB(conversation,transcript);
-                wordsSpoken = 0;
-            } else {
+              const conversation = transcript.split(" ").slice(-(wordsSpoken+1)).join(" ");
+              console.log("Conversation detected (timeout): " + conversation);
+              sendToDB(conversation, transcript);
+              wordsSpoken = 0;
+            }  else {
               wordsSpoken = 0;
             }
-          }
+          }, 10000); // 10 seconds pauseTime
 
-          // Set up a timer to reset wordsSpoken and startTime after 5 seconds
-          //setTimeout(() => {
-          //  wordsSpoken = 0;
-          //}, 10000);
-          //store to use in another component
-          
           texto.set(transcript);
       }
 
