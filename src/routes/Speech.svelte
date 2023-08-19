@@ -46,27 +46,23 @@
           .map(result => result.transcript)
           .join('');
           
-          // Calculate how much time has passed since the last word was spoken
-          const currentTimestamp = Date.now();
-          const timePassed = (currentTimestamp - prevTimestamp) / 1000; // Convert to seconds
-          prevTimestamp = currentTimestamp; // Update the previous timestamp
           // Separate after dot
           transcript = transcript.replace(/\./g, ". "); 
           // Update words spoken        
-          wordsSpoken = wordsSpoken+1;
+          conversation += " " + transcript.split(" ").slice(-1) 
 
           if (conversationTimeout !== null) {
             clearTimeout(conversationTimeout);
           }
           // Set up a timeout to check for conversation after a certain pause
           conversationTimeout = setTimeout(() => {
-            if (wordsSpoken > 5) {
-              const conversation = transcript.split(" ").slice(-(wordsSpoken+1)).join(" ");
-              console.log("Conversation detected (timeout): " + conversation);
-              sendToDB(conversation, transcript);
-              wordsSpoken = 0;
+            if (conversation.split(" ").length > 5) {
+              const conversationToSend = transcript.split(" ").slice(-(conversation.split("").length)).join(" ");
+              console.log("Conversation detected (timeout): " + conversationToSend);
+              sendToDB(conversationToSend, transcript);
+              conversation = "";
             }  else {
-              wordsSpoken = 0;
+              conversation = "";
             }
           }, 10000); // 10 seconds pauseTime
 
