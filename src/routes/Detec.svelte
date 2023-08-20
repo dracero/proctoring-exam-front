@@ -8,7 +8,6 @@
   import LoadingAnimation from "./LoadingAnimation.svelte";
   import { page } from '$app/stores';
   import Screen from './Screen.svelte';
-  import Subir from './Subir.svelte';
 
   $: state = "loading";
 
@@ -362,7 +361,6 @@
     <p></p>
   {#if state === "render-test"}
     <Screen />   
-    <Subir /> 
   {:else}
       <canvas class="webcam-placeholder"></canvas>
       <video 
