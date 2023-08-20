@@ -64,7 +64,7 @@
             }  else {
               conversation = "";
             }
-          }, 10000); // 10 seconds pauseTime
+          }, 5000); // 10 seconds pauseTime
 
           texto.set(transcript);
       }
