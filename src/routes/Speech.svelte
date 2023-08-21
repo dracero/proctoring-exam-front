@@ -39,6 +39,7 @@
       recognition = new window.SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
+      recognition.lang = 'es-ES'; // Set the language to Spanish (Spain)
   
       recognition.onresult = event => {
         transcript = Array.from(event.results)
