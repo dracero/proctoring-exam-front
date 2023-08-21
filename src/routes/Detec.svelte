@@ -8,8 +8,9 @@
   import LoadingAnimation from "./LoadingAnimation.svelte";
   import { page } from '$app/stores';
   import Screen from './Screen.svelte';
+  import Reel from './Reel.svelte';
 
-  $: state = "loading";
+  $: state = "instruction-reel";
 
   // VARIABLES
   let countValue;
@@ -203,6 +204,10 @@
     }
   }
 
+  function continueToRegistration() {
+    state = "enable-webcam";
+  }
+
 
   function gatherDataForClass() {   
     state="loading";
@@ -329,7 +334,6 @@
       let answer = mobilenet.predict(tf.zeros([1, MOBILE_NET_INPUT_HEIGHT, MOBILE_NET_INPUT_WIDTH, 3]));
       console.log(answer.shape);
     });
-    state="enable-webcam";
     console.log("Current State: " + state)
   }
   
@@ -361,21 +365,25 @@
     <p></p>
   {#if state === "render-test"}
     <Screen />   
+  {:else if state === "instruction-reel"}
+    <Reel {state} {continueToRegistration}/>
   {:else}
-      <canvas class="webcam-placeholder"></canvas>
+      <div in:fade>
+        <canvas in:fly={{y:1000,duration:1000}} class="webcam-placeholder"></canvas>
+      </div>
       <video 
         id="webcam" 
         class="responsive-webcam"
         autoplay={true} 
         bind:this={videoRef} 
         ></video>
-    <canvas 
-      class="canvas" 
-      style="position: fixed; top: -100px; left: -100px;"
-      width="128" 
-      height="96" 
-      bind:this={canvasRef}>
-    </canvas>
+      <canvas 
+        class="canvas" 
+        style="position: fixed; top: -100px; left: -100px;"
+        width="128" 
+        height="96" 
+        bind:this={canvasRef}>
+      </canvas>
     {#if state === "loading"}
       <Message msg="Cargando..."/>
       <LoadingAnimation/>
