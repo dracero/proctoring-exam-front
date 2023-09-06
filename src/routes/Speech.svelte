@@ -2,6 +2,7 @@
     // @ts-nocheck
     import { onMount } from 'svelte';
     import { texto } from './stores.js';
+    import { page } from '$app/stores';
     
   
     let recognition = null;
@@ -13,10 +14,12 @@
     let conversation = ""; // Initialize conversation as an empty string
 
     async function sendToDB(conversation, transcript){
+      const studentEmail = $page.data.session.user?.email;
       const response = await fetch('/api/inConversation', {
           method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+              email:studentEmail,
               conversation: conversation, // Add the email here
               context: transcript
             })

@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
 
   let isLeavingPage = false;
 
@@ -25,12 +26,13 @@
 
       // Create the notification message
       const notification = "User has left the page.";
-
+      const studentEmail = $page.data.session.user?.email;
       // Send the data to the server
       const response = await fetch('/api/inBlur', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          email: studentEmail,
           notification: notification,
           dateTime: dateTime
         })
