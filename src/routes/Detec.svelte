@@ -43,6 +43,15 @@
   let TRAIN_BUTTON;
   let CLASS_NAMES = [];
 
+  let intervalId;
+
+  $: if (state === "render-test") {
+    enableWebCam();
+    intervalId = setInterval(takePhotoPeriodically, 10000);
+  } else if (intervalId) {
+    clearInterval(intervalId);
+  }
+
   function wait(milliseconds) {
     return new Promise((resolve) => setTimeout(resolve, milliseconds));
   }
@@ -291,17 +300,12 @@
     });
   
   async function takePhoto() {
-      console.log("Taking Photo ughhh")
-      console.log("videoRef width:" + videoRef.width + " height:" + videoRef.height)
       // Get current frame from the video into the canvas
       canvasRef.getContext('2d').drawImage(videoRef, 0, 0, canvasRef.width, canvasRef.height);
       // Get data URL representing the image as a base64-encoded string.
       const dataUrl = canvasRef.toDataURL('image/png');
       // Get the student's email from the page store
-      console.log("Here's the data URL")
-      console.log(dataUrl)
       const studentEmail = $page.data.session.user?.email;
-      console.log("Here is the student's email: " + studentEmail);
       // Sets the value of the image store to the data URL. The value of the store is updated, and any component subscribing to the image store will be notified of the change and can react accordingly.
       image.set(dataUrl);
       // Stores to the DataBase
@@ -320,17 +324,13 @@
       }
   }
 
-  async function takePhotoEveryMinute() {
-      console.log("videoRef width:" + videoRef.width + " height:" + videoRef.height)
+  async function takePhotoPeriodically() {
       // Get current frame from the video into the canvas
       canvasRef.getContext('2d').drawImage(videoRef, 0, 0, canvasRef.width, canvasRef.height);
       // Get data URL representing the image as a base64-encoded string.
       const dataUrl = canvasRef.toDataURL('image/png');
       // Get the student's email from the page store
-      console.log("Here's the data URL")
-      console.log(dataUrl)
       const studentEmail = $page.data.session.user?.email;
-      console.log("Here is the student's email: " + studentEmail);
       // Sets the value of the image store to the data URL. The value of the store is updated, and any component subscribing to the image store will be notified of the change and can react accordingly.
       image.set(dataUrl);
       // Stores to the DataBase
@@ -417,7 +417,6 @@
     <p></p>
   {#if state === "render-test"}
     <Screen />
-    {enableWebCam()}   
     <video 
     id="webcam" 
     class="responsive-webcam-test"
@@ -431,7 +430,6 @@
       height="96" 
       bind:this={canvasRef}>
     </canvas>
-    {setInterval(takePhotoEveryMinute, 60000)}
   {:else if state === "instruction-reel"}
     <Reel {state} {continueToRegistration}/>
   {:else}

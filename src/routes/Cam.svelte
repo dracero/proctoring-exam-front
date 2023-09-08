@@ -18,7 +18,7 @@
         } catch (err) {
             console.error(err);
         }
-        console.log(stream.getTracks()[0])
+        //console.log(stream.getTracks()[0])
     }
 
     async function takePhoto() {
