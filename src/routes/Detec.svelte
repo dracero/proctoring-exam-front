@@ -76,6 +76,27 @@
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   }
 
+  async function enableWebCam(){
+    if (hasGetUserMedia()) {
+      // getUsermedia parameters.
+      const constraints = {
+        video: true,
+        width: 640, 
+        height: 480 
+      };
+      // Activate the webcam stream.
+      navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+        VIDEO.srcObject = stream; // MediaStream object is assigned to the <video> element
+        // When the stream is ready, videoPlaying becomes true and the Enable Webcam button is removed from the DOM  
+        VIDEO.addEventListener('loadeddata', function() {
+          videoPlaying = true;
+        });
+      });
+    } else {
+      console.warn('getUserMedia() is not supported by your browser');
+    }
+  }
+
   async function enableCam() {
     state="loading";
     await wait(1000);
@@ -270,12 +291,14 @@
     });
   
   async function takePhoto() {
+      console.log("Taking Photo ughhh")
       console.log("videoRef width:" + videoRef.width + " height:" + videoRef.height)
       // Get current frame from the video into the canvas
       canvasRef.getContext('2d').drawImage(videoRef, 0, 0, canvasRef.width, canvasRef.height);
       // Get data URL representing the image as a base64-encoded string.
       const dataUrl = canvasRef.toDataURL('image/png');
       // Get the student's email from the page store
+      console.log("Here's the data URL")
       console.log(dataUrl)
       const studentEmail = $page.data.session.user?.email;
       console.log("Here is the student's email: " + studentEmail);
@@ -283,6 +306,35 @@
       image.set(dataUrl);
       // Stores to the DataBase
       const response = await fetch('/api/inPhoto', {
+          method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: studentEmail, // Add the email here
+              imageData: imageValue
+            })
+         });
+         if (response.ok) {
+            console.log("Data inserted successfully");
+         } else {
+            console.error("Error inserting data:", response.statusText); 
+      }
+  }
+
+  async function takePhotoEveryMinute() {
+      console.log("videoRef width:" + videoRef.width + " height:" + videoRef.height)
+      // Get current frame from the video into the canvas
+      canvasRef.getContext('2d').drawImage(videoRef, 0, 0, canvasRef.width, canvasRef.height);
+      // Get data URL representing the image as a base64-encoded string.
+      const dataUrl = canvasRef.toDataURL('image/png');
+      // Get the student's email from the page store
+      console.log("Here's the data URL")
+      console.log(dataUrl)
+      const studentEmail = $page.data.session.user?.email;
+      console.log("Here is the student's email: " + studentEmail);
+      // Sets the value of the image store to the data URL. The value of the store is updated, and any component subscribing to the image store will be notified of the change and can react accordingly.
+      image.set(dataUrl);
+      // Stores to the DataBase
+      const response = await fetch('/api/inPeriodicPhotos', {
           method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -364,7 +416,22 @@
     <h2 id="status"></h2>
     <p></p>
   {#if state === "render-test"}
-    <Screen />   
+    <Screen />
+    {enableWebCam()}   
+    <video 
+    id="webcam" 
+    class="responsive-webcam-test"
+    autoplay={true} 
+    bind:this={videoRef} 
+    ></video>
+    <canvas 
+      class="canvas" 
+      style="position: fixed; top: -100px; left: -100px;"
+      width="128" 
+      height="96" 
+      bind:this={canvasRef}>
+    </canvas>
+    {setInterval(takePhotoEveryMinute, 60000)}
   {:else if state === "instruction-reel"}
     <Reel {state} {continueToRegistration}/>
   {:else}
@@ -475,6 +542,14 @@
       left: calc(30%); /* Adjust the left position as needed */
       width: 40vw;
       height: 50vh;
+    }
+
+    .responsive-webcam-test {
+      position: fixed;
+      top: -200px; /* Adjust the top position as needed */
+      left: -200px; /* Adjust the left position as needed */
+      width: 10vw;
+      height: 10vh;
     }
 
     .webcam-placeholder {

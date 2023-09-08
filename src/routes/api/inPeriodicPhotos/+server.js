@@ -14,7 +14,7 @@ export async function POST({ request }) {
 
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   await client.connect();
-  const collection = client.db("proctoring").collection('testScreenshot');
+  const collection = client.db("proctoring").collection('periodicPhotos');
   const count = await collection.countDocuments();
   if (count > 10) {
     await collection.deleteMany({}); // Clear the entire collection
