@@ -1,10 +1,11 @@
 <script>
-  import { afterUpdate } from 'svelte';
+  import { afterUpdate, onMount } from 'svelte';
+  import { page } from '$app/stores';
   import Subir from './Subir.svelte';
 
   // Add a boolean flag to track if the animation has been triggered
   let animationTriggered = true;
-
+  
   // Function to trigger the CSS animation
   function triggerAnimation() {
     animationTriggered = true;
@@ -28,6 +29,24 @@
       }, 3000);
     }
   });
+
+  onMount(async () => {
+    let examTitle = "Formulario de Prueba";
+    let studentEmail = $page.data.session.user?.email;
+
+    const response = await fetch('/api/inTest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: studentEmail, title: examTitle }) // Send the required data as JSON
+    });
+
+    if (!response.ok) {
+      console.error('On Test: Failed to send the required data');
+    } else {
+      console.log('On Test: Successfully sent the required data')
+    }
+  });
+
 </script>
 
 <style>
