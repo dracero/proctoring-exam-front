@@ -132,8 +132,8 @@
   }
 
   async function trainAndPredict() {
+    console.log("Ughhh I'm training and predictin...")
     // Predict flag set to false to stop the continuous prediction loop.
-    state="loading"
     predict = false;
     tf.util.shuffleCombo(trainingDataInputs, trainingDataOutputs);
     let outputsAsTensor = tf.tensor1d(trainingDataOutputs, 'int32');
@@ -146,7 +146,6 @@
     oneHotOutputs.dispose();
     inputsAsTensor.dispose();
     predict = true;
-    state="end"
     predictLoop();
   }
 
@@ -249,6 +248,7 @@
   }
 
   function predictLoop() {
+    console.log("prediction taking place uughh")
     //  Perform prediction as long as the 'predict' flag is set to true
     if (predict) {
       // Use TensorFlow.js to process the frame captured from the WebCam
@@ -430,6 +430,7 @@
       height="96" 
       bind:this={canvasRef}>
     </canvas>
+    {trainAndPredict()}
   {:else if state === "instruction-reel"}
     <Reel {state} {continueToRegistration}/>
   {:else}
