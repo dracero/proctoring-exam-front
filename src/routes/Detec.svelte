@@ -247,8 +247,12 @@
     dataGatherLoop();
   }
 
+  let previousPrediction = null;
+  let outOfFrame = false;
+  let leaveTime = null;
+  let returnTime = null;
+
   function predictLoop() {
-    console.log("prediction taking place uughh")
     //  Perform prediction as long as the 'predict' flag is set to true
     if (predict) {
       // Use TensorFlow.js to process the frame captured from the WebCam
@@ -261,8 +265,32 @@
         let prediction = model.predict(imageFeatures).squeeze();
         let highestIndex = prediction.argMax().arraySync();
         let predictionArray = prediction.arraySync();
+
+        let predictedClass = CLASS_NAMES[highestIndex];
+        let predictedAccuracy = Math.floor(predictionArray[highestIndex] * 100);
+
+        STATUS.innerText = 'Predicción: ' + predictedClass + ' con ' + predictedAccuracy + '% de confianza';
   
-        STATUS.innerText = 'Predicción: ' + CLASS_NAMES[highestIndex] + ' con ' + Math.floor(predictionArray[highestIndex] * 100) + '% de confianza';
+        console.log("predicted accuracy: " + predictedAccuracy)
+
+        if (highestIndex === 1 && predictedAccuracy === 99 && !outOfFrame) {
+          leaveTime = new Date();
+          outOfFrame = true;
+        }
+
+        if (highestIndex === 0 && outOfFrame){
+          returnTime = new Date();
+          let duration = (returnTime-leaveTime)/1000;
+
+          if (duration >= 5) {
+            console.log(`The Student left the frame for ${duration} seconds at the time ${leaveTime.toLocaleString()}`);
+          }
+
+          outOfFrame = false;
+        }
+
+        previousPrediction = highestIndex;
+
       });
       
       window.requestAnimationFrame(predictLoop);
