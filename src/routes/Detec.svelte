@@ -283,7 +283,7 @@
           let duration = (returnTime-leaveTime)/1000;
 
           if (duration >= 5) {
-            console.log(`The Student left the frame for ${duration} seconds at the time ${leaveTime.toLocaleString()}`);
+            notifyOutOfFrame($page.data.session.user?.email,leaveTime,duration);
           }
 
           outOfFrame = false;
@@ -295,6 +295,29 @@
       
       window.requestAnimationFrame(predictLoop);
     }
+  }
+
+  async function notifyOutOfFrame(email, time, duration) {
+    const payload = {
+        email: email,
+        time: time.toISOString(),
+        duration: duration
+    };
+
+    fetch('./routes/api/inOutOfFrame/+server.js', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data successfully sent to the server:', data);
+    })
+    .catch(error => {
+        console.error('Error sending data to the server:', error);
+    });
   }
   
   function logProgress(epoch, logs) {
