@@ -48,14 +48,23 @@
     }
   }
   
+  async function handleAltTabPress(event) {
+    if (event.altKey) {
+        // The Alt+Tab key combination was pressed
+        console.log("Alt+Tab pressed!");
+        // You can add any additional logic here
+    }
+  }
   onMount(() => {
     window.addEventListener('beforeunload', handleBeforeUnload);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleBlur);
+    window.addEventListener('keydown', handleAltTabPress);
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('keydown', handleAltTabPress);
     };
   });
 </script>
