@@ -283,6 +283,7 @@
           let duration = (returnTime-leaveTime)/1000;
 
           if (duration >= 5) {
+            console.log("YOU LEFT!")
             notifyOutOfFrame($page.data.session.user?.email,leaveTime,duration);
           }
 
@@ -298,26 +299,26 @@
   }
 
   async function notifyOutOfFrame(email, time, duration) {
-    const payload = {
-        email: email,
-        time: time.toISOString(),
-        duration: duration
-    };
-
-    fetch('./routes/api/inOutOfFrame/+server.js', {
+    try {
+      // Send the data to the server
+      const response = await fetch('/api/inOutOfFrame', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Data successfully sent to the server:', data);
-    })
-    .catch(error => {
-        console.error('Error sending data to the server:', error);
-    });
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          time: time.toLocaleTimeString('en-US', { hour12: false}),
+          duration: duration
+        })
+      });
+
+      if (response.ok) {
+        console.log("On Blur: Data inserted successfully");
+      } else {
+        console.error("On Blur: Error inserting data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("On Blur: An error occurred:", error);
+    }
   }
   
   function logProgress(epoch, logs) {

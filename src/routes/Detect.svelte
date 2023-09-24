@@ -49,7 +49,7 @@
   }
   
   async function handleAltTabPress(event) {
-    if (event.altKey) {
+    if (event.altKey && event.key === 'Tab') {
         // The Alt+Tab key combination was pressed
         console.log("Alt+Tab pressed!");
         // You can add any additional logic here
