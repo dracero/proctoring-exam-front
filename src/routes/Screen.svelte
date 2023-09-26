@@ -31,13 +31,12 @@
   });
 
   onMount(async () => {
-    let examTitle = "Formulario de Prueba";
     let studentEmail = $page.data.session.user?.email;
 
     const response = await fetch('/api/inTest', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: studentEmail, title: examTitle }) // Send the required data as JSON
+      body: JSON.stringify({ email: studentEmail}) // Send the required data as JSON
     });
 
     if (!response.ok) {

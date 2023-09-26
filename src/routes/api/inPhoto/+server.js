@@ -2,6 +2,7 @@ import { error } from '@sveltejs/kit';
 import { MongoClient } from 'mongodb';
 
 const uri = import.meta.env.VITE_MONGODB_URI;
+const test = import.meta.env.VITE_TEST_NAME;
 
 // @ts-ignore
 export async function POST({request}){
@@ -21,7 +22,7 @@ export async function POST({request}){
     await collection.deleteMany({}); // Clear the entire collection
   }
   // await collection.deleteMany({}); // Borro instancia previa
-  const result = await collection.insertOne({ student: email, image: imageData });
+  const result = await collection.insertOne({ student: email, exam:test, image: imageData });
   await client.close();
 
   if (!result) {
