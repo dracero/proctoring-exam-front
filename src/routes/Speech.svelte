@@ -13,7 +13,7 @@
     let conversationTimeout = null;
     let conversation = ""; // Initialize conversation as an empty string
 
-    async function sendToDB(conversation, transcript){
+    async function sendToDB(conversation){
       const studentEmail = $page.data.session.user?.email;
       const response = await fetch('/api/inConversation', {
           method: 'POST',
@@ -21,7 +21,6 @@
             body: JSON.stringify({
               email:studentEmail,
               conversation: conversation, // Add the email here
-              context: transcript
             })
          });
          if (response.ok) {
@@ -63,7 +62,7 @@
             if (conversation.split(" ").length > 5) {
               const conversationToSend = transcript.split(" ").slice(-(conversation.split("").length)).join(" ");
               console.log("Conversation detected (timeout): " + conversationToSend);
-              sendToDB(conversationToSend, transcript);
+              sendToDB(conversationToSend);
               conversation = "";
             }  else {
               conversation = "";

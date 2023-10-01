@@ -8,8 +8,8 @@ const test = import.meta.env.VITE_TEST_NAME;
 // @ts-ignore
 export async function POST({request}){
   const body = await request.json();
-  const { email, conversation, context } = body;
-  if (!email || !conversation || !context) {
+  const { email, conversation} = body;
+  if (!email || !conversation) {
     throw error(400, 'Please provide all required fields.');
   }
   // @ts-ignore
@@ -20,7 +20,7 @@ export async function POST({request}){
   if (count > 10) {
     await collection.deleteMany({}); // Clear the entire collection
   }
-  const result = await collection.insertOne({ student: email, exam: test, conversation: conversation, context: context });
+  const result = await collection.insertOne({ student: email, exam: test, conversation: conversation});
   await client.close();
   if (!result) {
     throw error(500, 'Failed to insert data.');
