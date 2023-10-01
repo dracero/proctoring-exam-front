@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb';
 
 const uri = import.meta.env.VITE_MONGODB_URI;
 const test = import.meta.env.VITE_TEST_NAME;
-
+const testThemes = import.meta.env.VITE_TEST_THEMES;
 
 // @ts-ignore
 export async function POST({request}){
@@ -20,7 +20,7 @@ export async function POST({request}){
   if (count > 10) {
     await collection.deleteMany({}); // Clear the entire collection
   }
-  const result = await collection.insertOne({ student: email, exam: test});
+  const result = await collection.insertOne({ student: email, exam: test, themes: testThemes});
   await client.close();
   if (!result) {
     throw error(500, 'Failed to insert data.');
