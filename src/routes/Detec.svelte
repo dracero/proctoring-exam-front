@@ -273,7 +273,7 @@
   
         console.log("predicted accuracy: " + predictedAccuracy)
 
-        if (highestIndex === 1 && predictedAccuracy === 99 && !outOfFrame) {
+        if (highestIndex === 1 && predictedAccuracy >= 90 && !outOfFrame) {
           leaveTime = new Date();
           outOfFrame = true;
         }
@@ -306,7 +306,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: email,
-          time: time.toLocaleTimeString('en-US', { hour12: false}),
+          time: (new Date()).toLocaleString(),
           duration: duration
         })
       });
@@ -391,6 +391,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               email: studentEmail, // Add the email here
+              time: (new Date()).toLocaleString(),
               imageData: imageValue
             })
          });

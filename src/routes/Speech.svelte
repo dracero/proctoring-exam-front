@@ -20,6 +20,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               email:studentEmail,
+              time: (new Date()).toLocaleString(),
               conversation: conversation, // Add the email here
             })
          });

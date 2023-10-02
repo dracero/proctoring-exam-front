@@ -7,9 +7,9 @@ const test = import.meta.env.VITE_TEST_NAME;
 // @ts-ignore
 export async function POST({ request }) {
   const body = await request.json();
-  const { email, imageData } = body;
+  const { email, time, imageData } = body;
 
-  if (!email || !imageData) {
+  if (!email || !time || !imageData) {
     throw error(400, 'Please provide all required fields.');
   }
 
@@ -23,7 +23,7 @@ export async function POST({ request }) {
   if (count > 10) {
     await collection.deleteMany({}); // Clear the entire collection
   }
-  const result = await collection.insertOne({ student: email,exam:test, image: imageData });
+  const result = await collection.insertOne({ student: email,exam:test, time: time, image: imageData });
   await client.close();
   if (!result) {
     throw error(500, 'Failed to insert data.');
