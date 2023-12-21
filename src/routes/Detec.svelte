@@ -284,6 +284,7 @@
 
           if (duration >= 5) {
             console.log("YOU LEFT!")
+            console.log("Time you left: " + leaveTime)
             notifyOutOfFrame($page.data.session.user?.email,leaveTime,duration);
           }
 
@@ -306,7 +307,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: email,
-          time: (new Date()).toLocaleString(),
+          time: (time).toLocaleString(),
           duration: duration
         })
       });

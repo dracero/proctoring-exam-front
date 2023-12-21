@@ -19,10 +19,6 @@ export async function POST({ request }) {
   await client.connect();
   console.log("CONNECTION SUCCESFULL!")
   const collection = client.db("proctoring").collection('periodicPhotos');
-  const count = await collection.countDocuments();
-  if (count > 10) {
-    await collection.deleteMany({}); // Clear the entire collection
-  }
   const result = await collection.insertOne({ student: email,exam:test, time: time, image: imageData });
   await client.close();
   if (!result) {
