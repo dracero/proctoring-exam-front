@@ -37,7 +37,6 @@
   let model;
 
   // DOM Elements
-  let STATUS;
   let VIDEO;
   let ENABLE_CAM_BUTTON;
   let TRAIN_BUTTON;
@@ -64,7 +63,6 @@
   }
 
   function loadDOMElements(){
-    STATUS = document.getElementById('status');
     VIDEO = document.getElementById('webcam');
     TRAIN_BUTTON = document.getElementById('train'); 
     ENABLE_CAM_BUTTON = document.getElementById('enableCam');
@@ -132,7 +130,6 @@
   }
 
   async function trainAndPredict() {
-    console.log("Ughhh I'm training and predictin...")
     // Predict flag set to false to stop the continuous prediction loop.
     predict = false;
     tf.util.shuffleCombo(trainingDataInputs, trainingDataOutputs);
@@ -175,10 +172,6 @@
       }
       
       examplesCount[gatherDataState]++; // Set to 1
-  
-      // Update the STATUS element to notify which class is being captured 
-      // by printing the current class name and data count
-      STATUS.innerText = ''; 
       
       for (let n = 0; n < CLASS_NAMES.length; n++) {
         if (examplesCount[n] > 100){
@@ -268,10 +261,8 @@
 
         let predictedClass = CLASS_NAMES[highestIndex];
         let predictedAccuracy = Math.floor(predictionArray[highestIndex] * 100);
-
-        STATUS.innerText = 'Predicción: ' + predictedClass + ' con ' + predictedAccuracy + '% de confianza';
   
-        console.log("predicted accuracy: " + predictedAccuracy)
+        // console.log("predicted accuracy: " + predictedAccuracy)
 
         if (highestIndex === 1 && predictedAccuracy >= 90 && !outOfFrame) {
           leaveTime = new Date();
@@ -283,8 +274,6 @@
           let duration = (returnTime-leaveTime)/1000;
 
           if (duration >= 5) {
-            console.log("YOU LEFT!")
-            console.log("Time you left: " + leaveTime)
             notifyOutOfFrame($page.data.session.user?.email,leaveTime,duration);
           }
 
@@ -465,17 +454,21 @@
     metrics: ['accuracy']  
   });
 
-})
-  </script>
-    <h2 id="status"></h2>
-    <p></p>
+  })
+
+// Reactive statement to watch for state changes
+$: if (state === "render-test") {
+  trainAndPredict();
+}
+
+</script>
   {#if state === "render-test"}
     <Screen />
     <video 
-    id="webcam" 
-    class="responsive-webcam-test"
-    autoplay={true} 
-    bind:this={videoRef} 
+      id="webcam" 
+      class="responsive-webcam-test"
+      autoplay={true} 
+      bind:this={videoRef} 
     ></video>
     <canvas 
       class="canvas" 
@@ -484,7 +477,6 @@
       height="96" 
       bind:this={canvasRef}>
     </canvas>
-    {trainAndPredict()}
   {:else if state === "instruction-reel"}
     <Reel {state} {continueToRegistration}/>
   {:else}
