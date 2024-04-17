@@ -122,7 +122,7 @@
   </div>
 {:else}
   <div class="fade-in">
-    <iframe src="https://forms.gle/BdVfodawKCG5Yj1a9" width="100%" height="468" frameborder="0" marginheight="0" marginwidth="0" title="Google Form">Cargando…</iframe>
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf-b1Ayz1opy_IiQGDQMKi0gDzBBFUK6SHxQAI5_OJ0q8b2KQ/viewform?embedded=true" width="640" height="2013" frameborder="0" marginheight="0" marginwidth="0" title="Embedded Google Form">Cargando…</iframe>
   </div>
   <Subir /> 
 {/if}
