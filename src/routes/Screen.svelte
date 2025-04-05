@@ -91,6 +91,7 @@
   }
 
   /* Define the CSS animation for drawing the tick */
+  
   @keyframes drawTick {
     to {
       stroke-dashoffset: 0;
@@ -109,7 +110,10 @@
 
 </style>
 
+
 <!-- Conditionally render the animation before the iframe -->
+<!--  -->
+<!-- https://docs.google.com/forms/d/e/1FAIpQLSf-b1Ayz1opy_IiQGDQMKi0gDzBBFUK6SHxQAI5_OJ0q8b2KQ/viewform?embedded=true -->
 {#if animationTriggered}
   <div class="tick-container">
     <svg width="100%" height="100%" viewBox="0 0 64 64">
@@ -122,7 +126,8 @@
   </div>
 {:else}
   <div class="fade-in">
-    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf-b1Ayz1opy_IiQGDQMKi0gDzBBFUK6SHxQAI5_OJ0q8b2KQ/viewform?embedded=true" width="640" height="2013" frameborder="0" marginheight="0" marginwidth="0" title="Embedded Google Form">Cargando…</iframe>
-  </div>
+    <iframe src="http://localhost/course/management.php" width="640" height="2013" frameborder="0" marginheight="0" marginwidth="0" title="Embedded Google Form">Cargando…</iframe>
+  </div> 
   <Subir /> 
 {/if}
+

@@ -1,6 +1,7 @@
 <script>
   // @ts-nocheck
   import * as tf from "@tensorflow/tfjs";
+  import * as cocoSsd from "@tensorflow-models/coco-ssd"
   import { onMount, afterUpdate } from 'svelte';
   import { count, image } from "./stores.js"
   import {scale, fly, fade} from 'svelte/transition';
@@ -35,6 +36,8 @@
   let examplesCount = [];
   let predict = false;
   let model;
+  let cocoSsdModel;
+
 
   // DOM Elements
   let VIDEO;
@@ -75,7 +78,7 @@
     CLASS_NAMES.push("En Cámara");
     CLASS_NAMES.push("Fuera de Cámara");
     for (let i = 0; i < dataCollectorButtons.length; i++) {
-      dataCollectorButtons[i].addEventListener('click', gatherDataForClass);
+      dataCollectorButtons[i].addEventListener('click', gatherDataForClassv2);
     }
   }
 
@@ -230,6 +233,11 @@
     state = "enable-webcam";
   }
 
+  async function isInFrame(){
+    console.log("Checking if person is actually in frame");
+    const predictions = await cocoSsdModel.detect(videoRef);
+    return predictions.some(prediction => prediction.class === 'person' && prediction.score > 0.5);
+  }
 
   function gatherDataForClass() {   
     state="loading";
@@ -238,6 +246,26 @@
     gatherDataState = (gatherDataState === STOP_DATA_GATHER) ? classNumber : STOP_DATA_GATHER;
     // Trigger data gathering loop
     dataGatherLoop();
+  }
+
+  async function gatherDataForClassv2() {
+    const previousState = state;
+    state = "loading";
+    const isInFrameResult = await isInFrame();
+    let classNumber = parseInt(this.getAttribute('data-1hot'));
+    if ((isInFrameResult && classNumber === 0) || (!isInFrameResult && classNumber === 1)) {
+      gatherDataState = (gatherDataState === STOP_DATA_GATHER) ? classNumber : STOP_DATA_GATHER;
+      dataGatherLoop();
+    } else {
+      if (isInFrameResult && classNumber === 1) {
+        alert("Por favor, coloquese fuera de la cámara antes de capturar los datos del entorno.");
+      } else if (!isInFrameResult && classNumber === 0) {
+        alert("Por favor, coloquese en frente de la cámara antes de capturar los datos faciales.");
+      } else {
+        alert("Por favor, intente denuevo");
+      }
+      state = previousState;
+    }
   }
 
   let previousPrediction = null;
@@ -367,12 +395,17 @@
   }
 
   async function takePhotoPeriodically() {
+      console.log('Taking periodic photo...')
       // Get current frame from the video into the canvas
       canvasRef.getContext('2d').drawImage(videoRef, 0, 0, canvasRef.width, canvasRef.height);
       // Get data URL representing the image as a base64-encoded string.
       const dataUrl = canvasRef.toDataURL('image/png');
       // Get the student's email from the page store
       const studentEmail = $page.data.session.user?.email;
+      const sessionToken = $page.data.session?.access_token;
+      console.log("Student email:",studentEmail)
+      console.log("Student session Token", sessionToken)
+
       // Sets the value of the image store to the data URL. The value of the store is updated, and any component subscribing to the image store will be notified of the change and can react accordingly.
       image.set(dataUrl);
       // Stores to the DataBase
@@ -382,7 +415,8 @@
             body: JSON.stringify({
               email: studentEmail, // Add the email here
               time: (new Date()).toLocaleString(),
-              imageData: imageValue
+              imageData: imageValue,
+              accessToken: sessionToken
             })
          });
          if (response.ok) {
@@ -435,7 +469,13 @@
   // Call the function immediately to start loading.
   console.log("Loading MobileNet Feature Model")
   loadMobileNetFeatureModel();
+
+  (async () => {
+    console.log("Loading COCO-SSD Model")
+    cocoSsdModel = await cocoSsd.load();
+  })();
   
+
   model = tf.sequential();
   model.add(tf.layers.dense({inputShape: [1024], units: 128, activation: 'relu'}));
   model.add(tf.layers.dense({units: CLASS_NAMES.length, activation: 'softmax'}));
@@ -444,6 +484,7 @@
   
   // Compile the model with the defined optimizer and specify a loss function to use.
   console.log("Compiling model")
+
   model.compile({
     // Adam changes the learning rate over time which is useful.
     optimizer: 'adam',
