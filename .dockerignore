@@ -1,0 +1,14 @@
+# Ignorar node_modules y archivos de build temporales
+node_modules
+build
+*.log
+dist
+.git
+.gitignore
+.vscode
+*.tsbuildinfo
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Remover .env de aquí para que se copie al contenedor
